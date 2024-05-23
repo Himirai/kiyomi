@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
 
 plugins {
-	`maven-publish`
 	kotlin("jvm") version "1.9.21"
 	id("com.github.johnrengelman.shadow") version "8.1.1"
 	id("io.papermc.paperweight.userdev").version("1.5.11")
@@ -13,7 +12,7 @@ plugins {
 
 val mainClassName = "Kiyomi"
 group = "dev.himirai.${mainClassName.lowercase()}"
-version = "1.0.4"
+version = "1.0.5"
 val internal = "$group.internal"
 
 repositories {
@@ -61,6 +60,7 @@ tasks {
 		doFirst {
 			val versionDir = file("${layout.buildDirectory}/libs/v${project.version}")
 			if (!versionDir.exists()) versionDir.mkdirs()
+			println("output dir for reobfJar: ${versionDir.absolutePath}")
 		}
 	}
 
