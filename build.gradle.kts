@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
 
 plugins {
+	`maven-publish`
 	kotlin("jvm") version "1.9.21"
 	id("com.github.johnrengelman.shadow") version "8.1.1"
 	id("io.papermc.paperweight.userdev").version("1.5.11")
@@ -12,7 +13,7 @@ plugins {
 
 val mainClassName = "Kiyomi"
 group = "dev.himirai.${mainClassName.lowercase()}"
-version = "1.0.5"
+version = "1.1.0"
 val internal = "$group.internal"
 
 repositories {
@@ -72,4 +73,15 @@ tasks {
 		kotlinOptions.jvmTarget = "17"
 	}
 
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("maven") {
+			groupId = project.group.toString()
+			artifactId = project.name
+			version = project.version.toString()
+			from(components["java"])
+		}
+	}
 }
