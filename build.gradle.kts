@@ -11,7 +11,7 @@ plugins {
 }
 
 // TODO: change this to your needs
-val mainClassName = "SamplePlugin"
+val mainClassName = "Kiyomi"
 group = "dev.himirai.${mainClassName.lowercase()}"
 version = "1.0.0"
 val internal = "$group.internal"
@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
 	paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+	implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.21")
 }
 
 java {
@@ -56,7 +57,7 @@ tasks {
 	}
 
 	reobfJar {
-		outputJar.set(layout.buildDirectory.file("libs/v${project.version}/${project.name}-remapped.jar"))
+		outputJar.set(layout.buildDirectory.file("libs/v${project.version}/${project.name}.jar"))
 		doFirst {
 			val versionDir = file("${layout.buildDirectory}/libs/v${project.version}")
 			if (!versionDir.exists()) versionDir.mkdirs()
