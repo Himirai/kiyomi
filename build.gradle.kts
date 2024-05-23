@@ -13,7 +13,7 @@ plugins {
 
 val mainClassName = "Kiyomi"
 group = "dev.himirai.${mainClassName.lowercase()}"
-version = "1.0.3"
+version = "1.0.4"
 val internal = "$group.internal"
 
 repositories {
