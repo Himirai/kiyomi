@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -21,3 +21,32 @@ jobs:
         run: chmod +x ./gradlew
       - name: Gradle Build
         run: ./gradlew build
+      - name: Extract Version
+        id: extract_version
+        run: |
+          version=$(./gradlew properties -q | grep "^version: " | awk '{print $2}')
+          echo "VERSION=$version" >> $GITHUB_ENV
+      - name: Upload JAR files
+        uses: actions/upload-artifact@v3
+        with:
+          name: kiyomi
+          path: build/libs/v${{ env.VERSION }}/Kiyomi.jar
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: Release v${{ env.VERSION }}
+          draft: false
+          prerelease: false
+      - name: Upload JAR to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/v${{ env.VERSION }}/Kiyomi.jar
+          asset_name: Kiyomi.jar
+          asset_content_type: application/java-archive
