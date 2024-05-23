@@ -10,10 +10,9 @@ plugins {
 	id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1"
 }
 
-// TODO: change this to your needs
 val mainClassName = "Kiyomi"
 group = "dev.himirai.${mainClassName.lowercase()}"
-version = "1.0.0"
+version = "1.0.1"
 val internal = "$group.internal"
 
 repositories {
@@ -36,8 +35,6 @@ bukkitPluginYaml {
 	authors.add("Himirai")
 	version = project.version.toString()
 	load = BukkitPluginYaml.PluginLoadOrder.POSTWORLD
-//    depend.add("WorldEdit")
-//    softDepend.add("Vault")
 }
 
 tasks {
@@ -57,7 +54,7 @@ tasks {
 	}
 
 	reobfJar {
-		outputJar.set(layout.buildDirectory.file("libs/v${project.version}/${project.name}.jar"))
+		outputJar.set(layout.buildDirectory.file("libs/v${project.version}/${project.name}-v${project.version}.jar"))
 		doFirst {
 			val versionDir = file("${layout.buildDirectory}/libs/v${project.version}")
 			if (!versionDir.exists()) versionDir.mkdirs()
