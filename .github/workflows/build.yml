@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: kiyomi
-          path: build/libs/v${{ env.VERSION }}/Kiyomi.jar
+          path: build/libs/v${{ env.VERSION }}/Kiyomi-v${{ env.VERSION }}.jar
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -41,12 +41,30 @@ jobs:
           release_name: Release v${{ env.VERSION }}
           draft: false
           prerelease: false
-      - name: Upload JAR to Release
+      - name: Upload thin JAR to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/libs/v${{ env.VERSION }}/Kiyomi.jar
-          asset_name: Kiyomi.jar
+          asset_path: build/libs/Kiyomi-${{ env.VERSION }}-dev.jar
+          asset_name: Kiyomi-thin.jar
+          asset_content_type: application/java-archive
+      - name: Upload non-remapped JAR to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/v${{ env.VERSION }}/Kiyomi-v${{ env.VERSION }}.jar
+          asset_name: Kiyomi-fat.jar
+          asset_content_type: application/java-archive
+      - name: Upload Remapped JAR to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/v${{ env.VERSION }}/Kiyomi-v${{ env.VERSION }}-remapped.jar
+          asset_name: Kiyomi-fat-remapped.jar
           asset_content_type: application/java-archive

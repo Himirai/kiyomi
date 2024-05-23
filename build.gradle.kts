@@ -46,7 +46,7 @@ tasks {
 		val relocations = listOf("org.intellij", "org.jetbrains", "kotlin")
 		relocations.forEach { relocate(it, "$internal.$it") }
 		archiveClassifier.set("")
-		archiveFileName.set("v${project.version}/$mainClassName.jar")
+		archiveFileName.set("v${project.version}/$mainClassName-v${project.version}.jar")
 	}
 
 	build {
@@ -54,7 +54,7 @@ tasks {
 	}
 
 	reobfJar {
-		outputJar.set(layout.buildDirectory.file("libs/v${project.version}/${project.name}-v${project.version}.jar"))
+		outputJar.set(layout.buildDirectory.file("libs/v${project.version}/${project.name}-v${project.version}-remapped.jar"))
 		doFirst {
 			val versionDir = file("${layout.buildDirectory}/libs/v${project.version}")
 			if (!versionDir.exists()) versionDir.mkdirs()
