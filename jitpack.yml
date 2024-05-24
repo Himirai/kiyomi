@@ -6,4 +6,4 @@ before_install:
 
 script:
   - chmod +x ./gradlew
-  - ./gradlew sourcesJar
+  - ./gradlew clean build publish
