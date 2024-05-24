@@ -16,7 +16,6 @@ open class BasicContainer : Container {
 
 	override fun <T : Any> register(instance: T) {
 		beans[BeanKey(instance::class.java)] = instance
-		println("registered ${instance::class.java}")
 		processComponent(instance)
 	}
 
