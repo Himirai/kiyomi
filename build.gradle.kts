@@ -82,24 +82,3 @@ tasks {
 	}
 
 }
-
-publishing {
-	publications {
-		create<MavenPublication>("maven") {
-			artifact(tasks.named("sourcesJar")) {
-				classifier = "sources"
-			}
-			artifact(tasks.reobfJar) {
-				classifier = "sources"
-			}
-			groupId = project.group.toString()
-			artifactId = project.name
-			version = project.version.toString()
-		}
-	}
-	repositories {
-		maven {
-			url = uri("https://jitpack.io")
-		}
-	}
-}
