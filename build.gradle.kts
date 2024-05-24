@@ -13,7 +13,7 @@ plugins {
 
 val mainClassName = "Kiyomi"
 group = "dev.himirai.${mainClassName.lowercase()}"
-version = "1.1.1"
+version = "1.1.2"
 val internal = "$group.internal"
 
 repositories {
@@ -45,24 +45,25 @@ tasks {
 		version("1.20.4")
 	}
 
+	jar {
+		enabled = false
+	}
+
 	shadowJar {
 		val relocations = listOf("org.intellij", "org.jetbrains", "kotlin")
 		relocations.forEach { relocate(it, "$internal.$it") }
 		archiveClassifier.set("")
-		archiveFileName.set("v${project.version}/$mainClassName-v${project.version}.jar")
+		archiveFileName.set("$mainClassName.jar")
 	}
 
 	build {
-		dependsOn(shadowJar)
+		dependsOn(reobfJar)
 	}
 
 	reobfJar {
-		outputJar.set(layout.buildDirectory.file("libs/v${project.version}/${project.name}-v${project.version}-remapped.jar"))
-		doFirst {
-			val versionDir = file("${layout.buildDirectory}/libs/v${project.version}")
-			if (!versionDir.exists()) versionDir.mkdirs()
-			println("output dir for reobfJar: ${versionDir.absolutePath}")
-		}
+		dependsOn(shadowJar)
+		inputJar.set(shadowJar.get().archiveFile)
+		outputJar.set(layout.buildDirectory.file("libs/${project.name}-remapped.jar"))
 	}
 
 	assemble {
@@ -79,9 +80,9 @@ publishing {
 	publications {
 		create<MavenPublication>("maven") {
 			groupId = project.group.toString()
-			artifactId = "${project.name}-dev"
+			artifactId = project.name
 			version = project.version.toString()
-			from(components["java"])
+			artifact(tasks.shadowJar.get().archiveFile)
 		}
 	}
 }

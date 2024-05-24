@@ -5,6 +5,5 @@ before_install:
   - sdk use java 17.0.9-amzn
 build:
   libs:
-    - build/libs/${version}/Kiyomi-${version}-remapped.jar
-    - build/libs/${version}/Kiyomi-${version}.jar
-    - build/libs/Kiyomi-${version}-dev.jar
+    - build/libs/Kiyomi.jar
+    - build/libs/Kiyomi-remapped.jar
