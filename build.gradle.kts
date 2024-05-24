@@ -40,6 +40,12 @@ bukkitPluginYaml {
 	load = BukkitPluginYaml.PluginLoadOrder.POSTWORLD
 }
 
+val sourcesJar by tasks.creating(Jar::class) {
+	from(sourceSets.main.get().allSource)
+	archiveClassifier.set("sources")
+	archiveFileName.set("$mainClassName-sources.jar")
+}
+
 tasks {
 	runServer {
 		version("1.20.4")
@@ -56,19 +62,12 @@ tasks {
 		enabled = false
 	}
 
-	val sourcesJar by creating(Jar::class) {
-		from(sourceSets.main.get().allSource)
-		archiveClassifier.set("sources")
-		archiveFileName.set("$mainClassName-sources.jar")
-	}
-
 	build {
 		dependsOn(reobfJar)
 	}
 
 	reobfJar {
 		dependsOn(shadowJar)
-		dependsOn(sourcesJar)
 		inputJar.set(shadowJar.get().archiveFile)
 		outputJar.set(layout.buildDirectory.file("libs/${project.name}-remapped.jar"))
 	}
@@ -81,4 +80,13 @@ tasks {
 		kotlinOptions.jvmTarget = "17"
 	}
 
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("mavenJava") {
+			from(components["java"])
+			artifact(sourcesJar)
+		}
+	}
 }

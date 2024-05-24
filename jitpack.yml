@@ -3,6 +3,7 @@ before_install:
   - sdk update
   - sdk install java 17.0.9-amzn
   - sdk use java 17.0.9-amzn
-build:
-  libs:
-    - build/libs/Kiyomi.jar
+
+script:
+  - chmod +x ./gradlew
+  - ./gradlew sourcesJar
