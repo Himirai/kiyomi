@@ -68,6 +68,7 @@ tasks {
 
 	reobfJar {
 		dependsOn(shadowJar)
+		dependsOn(sourcesJar)
 		inputJar.set(shadowJar.get().archiveFile)
 		outputJar.set(layout.buildDirectory.file("libs/${project.name}-remapped.jar"))
 	}
