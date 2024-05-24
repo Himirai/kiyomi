@@ -42,7 +42,7 @@ bukkitPluginYaml {
 
 val sourcesJar by tasks.creating(Jar::class) {
 	from(sourceSets.main.get().allSource)
-	archiveClassifier.set("sources")
+	archiveFileName.set("sources.jar")
 }
 
 tasks {
@@ -54,7 +54,7 @@ tasks {
 		val relocations = listOf("org.intellij", "org.jetbrains", "kotlin")
 		relocations.forEach { relocate(it, "$internal.$it") }
 		archiveClassifier.set("")
-		archiveFileName.set("$mainClassName-fat.jar")
+		archiveFileName.set("unmapped.jar")
 	}
 
 	jar {
@@ -62,13 +62,14 @@ tasks {
 	}
 
 	build {
-		dependsOn(reobfJar)
+		dependsOn(shadowJar)
+		dependsOn(sourcesJar)
 	}
 
 	reobfJar {
 		dependsOn(shadowJar)
 		inputJar.set(shadowJar.get().archiveFile)
-		outputJar.set(layout.buildDirectory.file("libs/${project.name}.jar"))
+		outputJar.set(layout.buildDirectory.file("libs/remapped.jar"))
 	}
 
 	assemble {
@@ -85,13 +86,9 @@ publishing {
 		create<MavenPublication>("maven") {
 			from(components["java"])
 			artifact(sourcesJar)
-			artifact(tasks["shadowJar"])
-		}
-	}
-	repositories {
-		maven {
-			name = "Local"
-			url = uri("file:///${layout.buildDirectory}/localMaven")
+			artifact(tasks.shadowJar.get()) {
+				classifier = "all"
+			}
 		}
 	}
 }
