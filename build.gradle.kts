@@ -42,7 +42,7 @@ bukkitPluginYaml {
 
 val sourcesJar by tasks.creating(Jar::class) {
 	from(sourceSets.main.get().allSource)
-	archiveFileName.set("sources.jar")
+	archiveFileName.set("kiyomi-sources.jar")
 }
 
 tasks {
@@ -54,7 +54,7 @@ tasks {
 		val relocations = listOf("org.intellij", "org.jetbrains", "kotlin")
 		relocations.forEach { relocate(it, "$internal.$it") }
 		archiveClassifier.set("")
-		archiveFileName.set("unmapped.jar")
+		archiveFileName.set("kiyomi-unmapped.jar")
 	}
 
 	jar {
@@ -69,7 +69,7 @@ tasks {
 	reobfJar {
 		dependsOn(shadowJar)
 		inputJar.set(shadowJar.get().archiveFile)
-		outputJar.set(layout.buildDirectory.file("libs/remapped.jar"))
+		outputJar.set(layout.buildDirectory.file("libs/kiyomi-remapped.jar"))
 	}
 
 	assemble {
