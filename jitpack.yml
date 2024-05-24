@@ -1,0 +1,5 @@
+jdk:
+  - openjdk17
+script:
+  - chmod +x ./gradlew
+  - ./gradlew sourcesJar
