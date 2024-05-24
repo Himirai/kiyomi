@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
 
 plugins {
-	`maven-publish`
 	kotlin("jvm") version "1.9.21"
+	id("maven-publish")
 	id("com.github.johnrengelman.shadow") version "8.1.1"
 	id("io.papermc.paperweight.userdev").version("1.5.11")
 	id("io.github.patrick.remapper") version "1.4.1"
@@ -56,19 +56,18 @@ tasks {
 		enabled = false
 	}
 
+	val sourcesJar by creating(Jar::class) {
+		from(sourceSets.main.get().allSource)
+		archiveClassifier.set("sources")
+		archiveFileName.set("$mainClassName-sources.jar")
+	}
+
 	build {
 		dependsOn(reobfJar)
 	}
 
-	val sourcesJar by creating(Jar::class) {
-		from(sourceSets.main.get().allSource)
-		archiveClassifier.set("")
-		archiveFileName.set("$mainClassName-sources.jar")
-	}
-
 	reobfJar {
 		dependsOn(shadowJar)
-		dependsOn(sourcesJar)
 		inputJar.set(shadowJar.get().archiveFile)
 		outputJar.set(layout.buildDirectory.file("libs/${project.name}-remapped.jar"))
 	}
@@ -86,10 +85,20 @@ tasks {
 publishing {
 	publications {
 		create<MavenPublication>("maven") {
+			artifact(tasks.named("sourcesJar")) {
+				classifier = "sources"
+			}
+			artifact(tasks.reobfJar) {
+				classifier = "sources"
+			}
 			groupId = project.group.toString()
 			artifactId = project.name
 			version = project.version.toString()
-			artifact(tasks.getByName("sourcesJar"))
+		}
+	}
+	repositories {
+		maven {
+			url = uri("https://jitpack.io")
 		}
 	}
 }
