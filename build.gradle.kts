@@ -43,7 +43,7 @@ bukkitPluginYaml {
 val sourcesJar by tasks.creating(Jar::class) {
 	from(sourceSets.main.get().allSource)
 	archiveClassifier.set("sources")
-	archiveFileName.set("$mainClassName-sources.jar")
+	archiveFileName.set("$mainClassName.jar")
 }
 
 tasks {
@@ -84,7 +84,7 @@ tasks {
 
 publishing {
 	publications {
-		create<MavenPublication>("mavenJava") {
+		create<MavenPublication>("maven") {
 			from(components["java"])
 			artifact(sourcesJar)
 		}
