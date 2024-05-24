@@ -13,7 +13,7 @@ plugins {
 
 val mainClassName = "Kiyomi"
 group = "dev.himirai.${mainClassName.lowercase()}"
-version = "1.1.3"
+version = "1.1.4"
 val internal = "$group.internal"
 
 repositories {
@@ -45,10 +45,6 @@ tasks {
 		version("1.20.4")
 	}
 
-	jar {
-		enabled = false
-	}
-
 	shadowJar {
 		val relocations = listOf("org.intellij", "org.jetbrains", "kotlin")
 		relocations.forEach { relocate(it, "$internal.$it") }
@@ -56,12 +52,23 @@ tasks {
 		archiveFileName.set("$mainClassName.jar")
 	}
 
+	jar {
+		enabled = false
+	}
+
 	build {
 		dependsOn(reobfJar)
 	}
 
+	val sourcesJar by creating(Jar::class) {
+		from(sourceSets.main.get().allSource)
+		archiveClassifier.set("")
+		archiveFileName.set("$mainClassName-sources.jar")
+	}
+
 	reobfJar {
 		dependsOn(shadowJar)
+		dependsOn(sourcesJar)
 		inputJar.set(shadowJar.get().archiveFile)
 		outputJar.set(layout.buildDirectory.file("libs/${project.name}-remapped.jar"))
 	}
@@ -82,7 +89,7 @@ publishing {
 			groupId = project.group.toString()
 			artifactId = project.name
 			version = project.version.toString()
-			artifact(tasks.shadowJar.get().archiveFile)
+			artifact(tasks.getByName("sourcesJar"))
 		}
 	}
 }
